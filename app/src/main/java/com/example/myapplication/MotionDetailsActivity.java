@@ -9,8 +9,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 public class MotionDetailsActivity extends AppCompatActivity {
 
     @Override
