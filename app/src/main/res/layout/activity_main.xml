@@ -5,20 +5,21 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Dont Touch My Phone"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Monitoring"
         android:onClick="startMonitoring"
+        android:text="Start Monitoring" />
 
 
 </LinearLayout>
