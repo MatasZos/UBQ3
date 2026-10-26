@@ -9,10 +9,16 @@ import android.hardware.SensorManager;
 
 import android.os.IBinder;
 import android.util.Log;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+
+import androidx.core.app.NotificationCompat;
 
 public class MotionDetectionService extends Service implements SensorEventListener {
 
     private static final String TAG = "MotionService";
+    private static final String CHANNEL_ID = "10002";
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
@@ -33,6 +39,14 @@ public class MotionDetectionService extends Service implements SensorEventListen
         super.onCreate();
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Motion Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Motion detection notifications");
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
@@ -52,6 +66,10 @@ public class MotionDetectionService extends Service implements SensorEventListen
                     float changeZ = Math.abs(z- oldZ);
                     if(changeX > MOVEMENT_THRESHOLD || changeY > MOVEMENT_THRESHOLD || changeZ > MOVEMENT_THRESHOLD){
                         Log.d(TAG, "MOVEMENT DETECTED");
+
+                        long motionTime = System.currentTimeMillis();
+
+                        showNotifications(motionTime);
                     }
 
                     oldX = x;
@@ -68,6 +86,17 @@ public class MotionDetectionService extends Service implements SensorEventListen
 
         backgroundthread.start();
         return START_STICKY;
+    }
+    public void showNotifications(long motionTime){
+        Intent intent = new Intent(this, MotionDetailsActivity.class);
+        intent.putExtra("motionTime", motionTime);
+
+        PendingIntent pIntent = PendingIntent.getActivity(this,0,intent,0);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("Motion Detected") .setContentText("This phone was moved").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pIntent).setAutoCancel(true);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification.build());
+
     }
 
     @Override
