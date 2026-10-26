@@ -26,6 +26,11 @@
             android:name=".MotionDetectionService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".MotionDetailsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
