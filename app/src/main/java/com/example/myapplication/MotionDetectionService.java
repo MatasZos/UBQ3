@@ -15,6 +15,8 @@ import android.app.PendingIntent;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Calendar;
+
 public class MotionDetectionService extends Service implements SensorEventListener {
 
     private static final String TAG = "MotionService";
@@ -88,12 +90,18 @@ public class MotionDetectionService extends Service implements SensorEventListen
         return START_STICKY;
     }
     public void showNotifications(long motionTime){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(motionTime);
+
+        String readableTime = calendar.getTime().toString();
+
+
         Intent intent = new Intent(this, MotionDetailsActivity.class);
         intent.putExtra("motionTime", motionTime);
 
-        PendingIntent pIntent = PendingIntent.getActivity(this,0,intent,0);
+        PendingIntent pIntent = PendingIntent.getActivity(this,(int) System.currentTimeMillis(),intent,0);
 
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("Motion Detected") .setContentText("This phone was moved").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pIntent).setAutoCancel(true);
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("Motion Detected") .setContentText("Motion time: " + readableTime).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pIntent).setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification.build());
 

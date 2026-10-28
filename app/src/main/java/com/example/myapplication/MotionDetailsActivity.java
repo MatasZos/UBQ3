@@ -9,6 +9,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 public class MotionDetailsActivity extends AppCompatActivity {
 
     @Override
@@ -22,9 +24,14 @@ public class MotionDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        long motionTime = getIntent().getExtras().getLong("motionTime");
+        long motionTime = getIntent().getLongExtra("motionTime", 0L);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(motionTime);
+        String readableTime = calendar.getTime().toString();
+
         TextView motionDetailsText = findViewById(R.id.motionDetailsText);
-        motionDetailsText.setText("Motion Detected\nTime: " + motionTime);
+        motionDetailsText.setText("Motion Detected\nTime: " + readableTime);
     }
 
 }
